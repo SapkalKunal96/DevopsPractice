@@ -10,9 +10,11 @@ How to install tools?
 Please enable the vitualization on your windows before proceeding to the installation of virtualbox.
 
 Download Oracle virtualbox using below link:
+
 https://www.virtualbox.org/wiki/Downloads
 
 -########## Vagrant download ###########-
+
 https://developer.hashicorp.com/vagrant/downloads#windows
 
 
@@ -39,4 +41,8 @@ jenkins if the CI tool which is build on the JAVA framework so it needs an java 
 9. access jenkins using http://localhost:8080/
 
 with above steps you have a jenkins up and running
+
+Install Plugins:
+Pipeline: Stage View Plugin
+AWS Credentials Plugin
 
