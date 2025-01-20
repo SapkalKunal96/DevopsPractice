@@ -19,8 +19,8 @@ pipeline {
         stage('Pushing code to S3') {
             steps {
                 // Set AWS credentials using Jenkins' AWS Credentials plugin
-                 //withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) 
-                 withAWS(region: "${AWS_REGION}", credentials: 'jenkins-aws-key-id') {
+                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) 
+                  {
                  script {
                     // Set AWS credentials using Jenkins' AWS Credentials plugin
                         try {
