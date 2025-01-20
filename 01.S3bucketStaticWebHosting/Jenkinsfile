@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-
         AWS_REGION = 'us-east-1'  // Change to your desired AWS region
         S3_BUCKET = 'www.cloudenthusiastic.online'  // Your S3 bucket name
     }
@@ -10,19 +9,18 @@ pipeline {
     stages {
         stage('Code Checkout') {
             steps {
-                echo 'Code Checkout....'
+                echo 'No need as we are using pipeline script for checkout'
                 // Checkout code from a private GitHub repository
-              //
+                // Add checkout logic here
             }
         }
 
         stage('Pushing code to S3') {
             steps {
                 // Set AWS credentials using Jenkins' AWS Credentials plugin
-                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) 
-                  {
-                 script {
-                    // Set AWS credentials using Jenkins' AWS Credentials plugin
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
+                    script {
+                        // Set AWS credentials using Jenkins' AWS Credentials plugin
                         try {
                             sh """
                                 aws s3 ls
@@ -32,14 +30,14 @@ pipeline {
                         } catch (Exception e) {
                             error "AWS S3 sync failed: ${e.getMessage()}"
                         }
-                 }
+                    }
                 }
             }
         }
 
-        stage('Deploy') {
+        stage('Test Website') {
             steps {
-                echo 'Deploying....'
+                sh 'curl www.cloudenthusiastic.online'
                 // Add your deployment steps here
             }
         }
