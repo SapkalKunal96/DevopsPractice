@@ -12,7 +12,7 @@ pipeline {
             steps {
                 echo 'Code Checkout....'
                 // Checkout code from a private GitHub repository
-                git 'https://github.com/SapkalKunal96/devopsK.git'
+                git credentialsId: 'github-credentials-id', url: 'https://github.com/SapkalKunal96/devopsK.git'
             }
         }
 
@@ -24,7 +24,8 @@ pipeline {
                         // You can use AWS CLI commands after this block
                         try {
                             sh """
-                                aws s3 sync . s3://${S3_BUCKET}/ --region ${AWS_REGION}
+                                cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting
+                                aws s3 sync . s3://${S3_BUCKET}/
                             """
                         } catch (Exception e) {
                             error "AWS S3 sync failed: ${e.getMessage()}"
