@@ -1,38 +1,40 @@
 pipeline {
     agent any
+
     environment {
         AWS_CREDENTIALS_ID = 'jenkins-aws-key-id'  // The ID of your AWS credentials in Jenkins
         AWS_REGION = 'us-east-1'  // Change to your desired AWS region
         S3_BUCKET = 'www.cloudenthusiastic.online'  // Your S3 bucket name
     }
+
     stages {
         stage('Code Checkout') {
             steps {
                 echo 'Code Checkout....'
-                 // Checkout code from a private GitHub repository
+                // Checkout code from a private GitHub repository
                 git credentialsId: 'github-credentials-id', url: 'https://github.com/SapkalKunal96/devopsK.git'
-                
-
             }
         }
-        stage('pusing code to S3') {
+
+        stage('Pushing code to S3') {
             steps {
                 script {
                     // Set AWS credentials using Jenkins' AWS Credentials plugin
                     withAWS(credentials: AWS_CREDENTIALS_ID) {
                         // You can use AWS CLI commands after this block
                         sh """
-                            cd 
+                            cd ${WORKSPACE}
                             aws s3 sync . s3://${S3_BUCKET}/ --delete --exclude '.git/*' --region ${AWS_REGION}
                         """
                     }
                 }
+            }
         }
+
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
             }
         }
     }
-}
 }
