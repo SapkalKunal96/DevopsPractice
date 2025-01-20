@@ -20,8 +20,6 @@ pipeline {
             steps {
                 script {
                     // Set AWS credentials using Jenkins' AWS Credentials plugin
-                    withAWS(credentials: AWS_CREDENTIALS_ID, region: AWS_REGION) {
-                        // You can use AWS CLI commands after this block
                         try {
                             sh """
                                 cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting
@@ -30,7 +28,7 @@ pipeline {
                         } catch (Exception e) {
                             error "AWS S3 sync failed: ${e.getMessage()}"
                         }
-                    }
+                    
                 }
             }
         }
