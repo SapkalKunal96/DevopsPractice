@@ -19,14 +19,15 @@ pipeline {
         stage('Pushing code to S3') {
             steps {
                 // Set AWS credentials using Jenkins' AWS Credentials plugin
-                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
+                 //withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) 
+                 withAWS(region: "${AWS_REGION}", credentials: 'jenkins-aws-key-id') {
                  script {
                     // Set AWS credentials using Jenkins' AWS Credentials plugin
                         try {
                             sh """
                                 aws s3 ls
                                 cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting
-                                aws s3 sync . s3://${S3_BUCKET}/ --exclude 'Jenkins*'
+                                aws s3 sync . s3://${S3_BUCKET}/ --exclude 'Jenkinsfile' --delete
                             """
                         } catch (Exception e) {
                             error "AWS S3 sync failed: ${e.getMessage()}"
