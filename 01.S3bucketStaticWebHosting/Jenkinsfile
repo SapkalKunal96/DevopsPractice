@@ -12,7 +12,7 @@ pipeline {
             steps {
                 echo 'Code Checkout....'
                 // Checkout code from a private GitHub repository
-                git credentialsId: 'github-credentials-id', url: 'https://github.com/SapkalKunal96/devopsK.git'
+                git 'https://github.com/SapkalKunal96/devopsK.git'
             }
         }
 
