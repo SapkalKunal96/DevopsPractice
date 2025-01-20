@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        AWS_CREDENTIALS_ID = 'jenkins-aws-key-id'  // The ID of your AWS credentials in Jenkins
+        AWS_ACCESS_KEY_ID = credentials('jenkins-aws-key-id').accessKey
+        AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-key-id').secretKey
         AWS_REGION = 'us-east-1'  // Change to your desired AWS region
         S3_BUCKET = 'www.cloudenthusiastic.online'  // Your S3 bucket name
     }
@@ -18,8 +19,7 @@ pipeline {
 
         stage('Pushing code to S3') {
             steps {
-                withCredentials(credentialsId: AWS_CREDENTIALS_ID) {
-                    // Set AWS credentials using Jenkins' AWS Credentials plugin
+                // Set AWS credentials using Jenkins' AWS Credentials plugin
                  script {
                     // Set AWS credentials using Jenkins' AWS Credentials plugin
                         try {
@@ -31,7 +31,7 @@ pipeline {
                         } catch (Exception e) {
                             error "AWS S3 sync failed: ${e.getMessage()}"
                         }
-                 }
+                 
                 }
             }
         }
