@@ -20,12 +20,15 @@ pipeline {
             steps {
                 script {
                     // Set AWS credentials using Jenkins' AWS Credentials plugin
-                    withAWS(credentials: AWS_CREDENTIALS_ID) {
+                    withAWS(credentials: AWS_CREDENTIALS_ID, region: AWS_REGION) {
                         // You can use AWS CLI commands after this block
-                        sh """
-                            cd ${WORKSPACE}
-                            aws s3 sync . s3://${S3_BUCKET}/ --delete --exclude '.git/*' --region ${AWS_REGION}
-                        """
+                        try {
+                            sh """
+                                aws s3 sync . s3://${S3_BUCKET}/ --region ${AWS_REGION}
+                            """
+                        } catch (Exception e) {
+                            error "AWS S3 sync failed: ${e.getMessage()}"
+                        }
                     }
                 }
             }
@@ -34,6 +37,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
+                // Add your deployment steps here
             }
         }
     }
