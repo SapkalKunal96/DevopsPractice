@@ -26,7 +26,7 @@ pipeline {
                             sh """
                                 aws s3 ls
                                 cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting
-                                aws s3 sync . s3://${S3_BUCKET}/ --exclude 'Jenkins'
+                                aws s3 sync . s3://${S3_BUCKET}/ --exclude 'Jenkins*'
                             """
                         } catch (Exception e) {
                             error "AWS S3 sync failed: ${e.getMessage()}"
