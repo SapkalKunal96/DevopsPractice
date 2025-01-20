@@ -36,6 +36,7 @@ jenkins if the CI tool which is build on the JAVA framework so it needs an java 
 6. sudo apt update
 7. sudo apt-get install jenkins
 8. systemctl status jenkins
+9. access jenkins using http://localhost:8080/
 
 with above steps you have a jenkins up and running
 

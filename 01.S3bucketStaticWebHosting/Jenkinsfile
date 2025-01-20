@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+    triggers {
+        githubPush()  // This listens for the GitHub webhook event (push)
+    }
+    stages {
+        stage('Code Checkout') {
+            steps {
+                echo 'Code Checkout....'
+                 // Checkout code from a private GitHub repository
+                //git credentialsId: 'github-credentials-id', url: 'https://github.com/yourusername/your-repository.git'
+                git 'https://github.com/SapkalKunal96/devopsK.git'
+
+            }
+        }
+        stage('pusing code to S3') {
+            steps {
+                echo 'code to S3....'
+                sh 'cd 01.S3bucketStaticWebHosting'
+                sh 'aws s3 cp . s3://www.cloudenthusiastic.online --recursive'
+
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
+    }
+}
