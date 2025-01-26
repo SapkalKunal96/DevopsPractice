@@ -42,9 +42,9 @@ pipeline {
             }
         }
 
-        stage('Pushing code to S3') {
-            steps {
-                   sh 'aws s3 ls'
+        // stage('Pushing code to S3') {
+        //     steps {
+        //            sh 'aws s3 ls'
                 // Set AWS credentials using Jenkins' AWS Credentials plugin
                 // withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
                 //     script {
@@ -60,14 +60,16 @@ pipeline {
                 //         }
                 //     }
                 // }
-            }
-        }
+        //     }
+        // }
 
         stage('Test Website') {
             steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
                  sh 'aws s3 ls'
-                // sh 'curl www.cloudenthusiastic.online'
+                sh 'curl http://www.cloudenthusiastic.online.s3-website-us-east-1.amazonaws.com'
                 // Add your deployment steps here
+            }
             }
         }
     }
