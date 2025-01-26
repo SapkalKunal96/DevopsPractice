@@ -1,5 +1,6 @@
 pipeline {
     agent any
+    parameters { choice(name: 'CHOICES', choices: ['apply', 'destroy'], description: 'Depends on input pipeline will trigger') }
 
     environment {
         AWS_REGION = 'us-east-1'  // Change to your desired AWS region
@@ -34,7 +35,7 @@ pipeline {
                 script {
                     sh """
                         cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting/terraform
-                        terraform apply --auto-approve
+                        terraform ${params.CHOICE} --auto-approve
                     """
                 }
                 }
