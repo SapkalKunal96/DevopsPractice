@@ -16,6 +16,7 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
                 script{
                     sh """
                         terraform --version
@@ -23,16 +24,19 @@ pipeline {
                         terraform init
                     """
                 }
+                }
             }
         }
 
-        stage('Terraform Plan') {
+        stage('Terraform Apply') {
             steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
                 script {
                     sh """
                         cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting/terraform
                         terraform apply --auto-approve
                     """
+                }
                 }
             }
         }
