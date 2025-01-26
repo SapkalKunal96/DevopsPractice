@@ -31,7 +31,7 @@ pipeline {
                 script {
                     sh """
                         cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting/terraform
-                        terraform plan --auto-approve
+                        terraform apply --auto-approve
                     """
                 }
             }
