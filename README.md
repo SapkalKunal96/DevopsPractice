@@ -3,6 +3,7 @@
 
 Pre-requisites for projects
 How to install tools?
+Download html template (wget https://www.tooplate.com/zip-templates/2088_big_city.zip)
 
 
 -########## Virtualbox for VM's on Windows ###########-
