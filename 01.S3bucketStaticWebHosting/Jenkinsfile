@@ -1,6 +1,9 @@
 pipeline {
     agent any
-    parameters { choice(name: 'CHOICES', choices: ['apply', 'destroy'], description: 'Depends on input pipeline will trigger') }
+
+    parameters {
+        choice(name: 'CHOICES', choices: ['apply', 'destroy'], description: 'Depends on input pipeline will trigger')
+    }
 
     environment {
         AWS_REGION = 'us-east-1'  // Change to your desired AWS region
@@ -18,58 +21,76 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
-                script{
-                    sh """
-                        terraform --version
-                        cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting/terraform
-                        terraform init
-                    """
-                }
+                    script {
+                        sh """
+                            terraform --version
+                            cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting/terraform
+                            terraform init
+                        """
+                    }
                 }
             }
         }
 
         stage('Terraform Apply') {
+            when {
+                expression { return params.CHOICES == 'apply' }
+            }
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
-                script {
-                    sh """
-                        cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting/terraform
-                        terraform ${params.CHOICES} --auto-approve
-                    """
+                    script {
+                        sh """
+                            cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting/terraform
+                            terraform apply --auto-approve
+                        """
+                    }
                 }
+            }
+        }
+
+        stage('Terraform Destroy') {
+            when {
+                expression { return params.CHOICES == 'destroy' }
+            }
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
+                    script {
+                        sh """
+                            cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting/terraform
+                            terraform destroy --auto-approve
+                        """
+                    }
                 }
             }
         }
 
         // stage('Pushing code to S3') {
         //     steps {
-        //            sh 'aws s3 ls'
-                // Set AWS credentials using Jenkins' AWS Credentials plugin
-                // withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
-                //     script {
-                //         // Set AWS credentials using Jenkins' AWS Credentials plugin
-                //         try {
-                //             sh """
-                //                 aws s3 ls
-                //                 cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting
-                //                 aws s3 sync . s3://${S3_BUCKET}/ --exclude 'Jenkinsfile' --delete
-                //             """
-                //         } catch (Exception e) {
-                //             error "AWS S3 sync failed: ${e.getMessage()}"
-                //         }
-                //     }
-                // }
+        //         sh 'aws s3 ls'
+        //         // Set AWS credentials using Jenkins' AWS Credentials plugin
+        //         // withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
+        //         //     script {
+        //         //         try {
+        //         //             sh """
+        //         //                 aws s3 ls
+        //         //                 cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting
+        //         //                 aws s3 sync . s3://${S3_BUCKET}/ --exclude 'Jenkinsfile' --delete
+        //         //             """
+        //         //         } catch (Exception e) {
+        //         //             error "AWS S3 sync failed: ${e.getMessage()}"
+        //         //         }
+        //         //     }
+        //         // }
         //     }
         // }
 
         stage('Test Website') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
-                 sh 'aws s3 ls'
-                sh 'curl http://www.cloudenthusiastic.online.s3-website-us-east-1.amazonaws.com'
-                // Add your deployment steps here
-            }
+                    sh 'aws s3 ls'
+                    sh 'curl http://www.cloudenthusiastic.online.s3-website-us-east-1.amazonaws.com'
+                    // Add your deployment steps here
+                }
             }
         }
     }
