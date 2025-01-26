@@ -31,6 +31,7 @@ pipeline {
 
         stage('Pushing code to S3') {
             steps {
+                   sh 'aws s3 ls'
                 // Set AWS credentials using Jenkins' AWS Credentials plugin
                 // withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
                 //     script {
@@ -51,6 +52,7 @@ pipeline {
 
         stage('Test Website') {
             steps {
+                 sh 'aws s3 ls'
                 // sh 'curl www.cloudenthusiastic.online'
                 // Add your deployment steps here
             }
