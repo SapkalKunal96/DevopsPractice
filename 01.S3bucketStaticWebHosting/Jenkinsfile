@@ -78,8 +78,8 @@ pipeline {
 
         stage('Test Website') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
-                    sh 'curl http://${params.S3_Bucket}.s3-website-${env.AWS_REGION}.amazonaws.com'
+                 {
+                    sh 'curl http://${params.S3_Bucket}.s3-website-$AWS_REGION.amazonaws.com'
                     // Add your deployment steps here
                 }
             }
