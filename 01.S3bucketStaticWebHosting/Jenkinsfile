@@ -7,17 +7,9 @@ pipeline {
     }
 
     environment {
-        AWS_REGION = 'us-east-1'  // Change to your desired AWS region
-        S3_BUCKET = 'www.cloudenthusiastic.online'  // Your S3 bucket name
+        AWS_REGION = 'us-east-1'
     }
-
-    // stages {
-    //     stage('Code Checkout') {
-    //         steps {
-    //             echo 'No need as we are using pipeline script for checkout'
-    //             git branch: 'main', url: 'https://github.com/SapkalKunal96/devopsK.git'
-    //         }
-    //     }
+    stages {
 
         stage('Terraform Init') {
             steps {
@@ -87,10 +79,11 @@ pipeline {
         stage('Test Website') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
-                    sh 'curl http://www.cloudenthusiastic.online.s3-website-us-east-1.amazonaws.com'
+                    sh 'curl http://${params.S3_Bucket}.s3-website-${env.AWS_REGION}.amazonaws.com'
                     // Add your deployment steps here
                 }
             }
         }
-    }
 
+    }
+}
