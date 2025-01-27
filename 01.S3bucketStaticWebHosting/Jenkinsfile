@@ -65,7 +65,7 @@ pipeline {
                         try {
                             sh """
                                 aws s3 ls
-                                cd ../website
+                                cd 01.S3bucketStaticWebHosting/website
                                 aws s3 sync . s3://${params.S3_Bucket}/ 
                             """
                         } catch (Exception e) {
