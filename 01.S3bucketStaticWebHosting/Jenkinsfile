@@ -33,7 +33,7 @@ pipeline {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
                     script {
                         sh """
-                            cd terraform
+                            cd 01.S3bucketStaticWebHosting/terraform
                             terraform apply --auto-approve
                         """
                     }
@@ -49,7 +49,7 @@ pipeline {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
                     script {
                         sh """
-                            cd terraform
+                            cd 01.S3bucketStaticWebHosting/terraform
                             terraform destroy --auto-approve
                         """
                     }
@@ -65,7 +65,7 @@ pipeline {
                         try {
                             sh """
                                 aws s3 ls
-                                cd ../website
+                                cd ../01.S3bucketStaticWebHosting/website
                                 aws s3 sync . s3://${params.S3_Bucket}/ 
                             """
                         } catch (Exception e) {
