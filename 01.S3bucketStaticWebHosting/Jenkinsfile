@@ -3,6 +3,7 @@ pipeline {
 
     parameters {
         choice(name: 'CHOICES', choices: ['apply', 'destroy'], description: 'Depends on input pipeline will trigger')
+        string(name: 'S3_Bucket', defaultValue: 'www.cloudenthusiastic.online', description: 'Please enter your website name. e.g. www.cloudenthusiastic.online')
     }
 
     environment {
@@ -10,13 +11,13 @@ pipeline {
         S3_BUCKET = 'www.cloudenthusiastic.online'  // Your S3 bucket name
     }
 
-    stages {
-        stage('Code Checkout') {
-            steps {
-                echo 'No need as we are using pipeline script for checkout'
-                git branch: 'main', url: 'https://github.com/SapkalKunal96/devopsK.git'
-            }
-        }
+    // stages {
+    //     stage('Code Checkout') {
+    //         steps {
+    //             echo 'No need as we are using pipeline script for checkout'
+    //             git branch: 'main', url: 'https://github.com/SapkalKunal96/devopsK.git'
+    //         }
+    //     }
 
         stage('Terraform Init') {
             steps {
@@ -40,7 +41,7 @@ pipeline {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
                     script {
                         sh """
-                            cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting/terraform
+                            cd terraform
                             terraform apply --auto-approve
                         """
                     }
@@ -56,7 +57,7 @@ pipeline {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
                     script {
                         sh """
-                            cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting/terraform
+                            cd terraform
                             terraform destroy --auto-approve
                         """
                     }
@@ -64,34 +65,32 @@ pipeline {
             }
         }
 
-        // stage('Pushing code to S3') {
-        //     steps {
-        //         sh 'aws s3 ls'
-        //         // Set AWS credentials using Jenkins' AWS Credentials plugin
-        //         // withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
-        //         //     script {
-        //         //         try {
-        //         //             sh """
-        //         //                 aws s3 ls
-        //         //                 cd /var/lib/jenkins/workspace/01.S3Bucket/01.S3bucketStaticWebHosting
-        //         //                 aws s3 sync . s3://${S3_BUCKET}/ --exclude 'Jenkinsfile' --delete
-        //         //             """
-        //         //         } catch (Exception e) {
-        //         //             error "AWS S3 sync failed: ${e.getMessage()}"
-        //         //         }
-        //         //     }
-        //         // }
-        //     }
-        // }
+        stage('Pushing code to S3') {
+            steps {
+                // Set AWS credentials using Jenkins' AWS Credentials plugin
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
+                    script {
+                        try {
+                            sh """
+                                aws s3 ls
+                                cd ../website
+                                aws s3 sync . s3://${params.S3_Bucket}/ 
+                            """
+                        } catch (Exception e) {
+                            error "AWS S3 sync failed: ${e.getMessage()}"
+                        }
+                    }
+                }
+            }
+        }
 
         stage('Test Website') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
-                    sh 'aws s3 ls'
                     sh 'curl http://www.cloudenthusiastic.online.s3-website-us-east-1.amazonaws.com'
                     // Add your deployment steps here
                 }
             }
         }
     }
-}
+
