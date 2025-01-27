@@ -9,6 +9,7 @@ pipeline {
     environment {
         AWS_REGION = 'us-east-1'
     }
+
     stages {
 
         stage('Terraform Init') {
@@ -59,14 +60,13 @@ pipeline {
 
         stage('Pushing code to S3') {
             steps {
-                // Set AWS credentials using Jenkins' AWS Credentials plugin
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'jenkins-aws-key-id']]) {
                     script {
                         try {
                             sh """
                                 aws s3 ls
                                 cd 01.S3bucketStaticWebHosting/website
-                                aws s3 sync . s3://${params.S3_Bucket}/ 
+                                aws s3 sync . s3://${params.S3_Bucket}/
                             """
                         } catch (Exception e) {
                             error "AWS S3 sync failed: ${e.getMessage()}"
@@ -78,9 +78,10 @@ pipeline {
 
         stage('Test Website') {
             steps {
-                 {
-                    sh 'curl http://${params.S3_Bucket}.s3-website-$AWS_REGION.amazonaws.com'
-                    // Add your deployment steps here
+                script {
+                    sh """
+                        curl http://${params.S3_Bucket}.s3-website-${env.AWS_REGION}.amazonaws.com
+                    """
                 }
             }
         }
