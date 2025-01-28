@@ -1,0 +1,1 @@
+resource_group_name = "cloudenthousiast-rg-from-tfvars"
