@@ -5,7 +5,11 @@
 ## peering connection to communicate between ec2
 
 ## Future plan
-## create and security group with dynamic function for different ports
 ## create private subnects in different az's
 ## NAT to communicate for private subnets
 ## add entry in route table and assiciate private subnets
+
+# Manual work to ping machines.
+
+## try adding routes for the peering connection
+## try adding ICMP protocol for the ping
