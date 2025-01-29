@@ -13,7 +13,7 @@ variable "us_west_region" {
 
 variable "public_subnet_east_cidr" {
   description = "Public subnet CIDR in the us-east VPC"
-  type        = list(string)
+  type        = list(any)
   default     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
 
 }
@@ -28,7 +28,7 @@ variable "public_subnet_east_zone" {
 
 variable "public_subnet_west_cidr" {
   description = "subnet in different az's for the public subnet in the us-west VPC"
-  type        = list(string)
+  type        = list(any)
   default     = ["172.16.1.0/24", "172.16.2.0/24", "172.16.3.0/24"]
 
 }
@@ -39,4 +39,16 @@ variable "public_subnet_west_zone" {
   type        = list(string)
   default     = ["us-west-2a", "us-west-2b", "us-west-2c"]
 
+}
+
+
+variable "ports" {
+  type    = list(string)
+  default = ["80", "443"]
+
+}
+
+variable "ssh-all" {
+  type    = list(any)
+  default = ["0.0.0.0/0"]
 }

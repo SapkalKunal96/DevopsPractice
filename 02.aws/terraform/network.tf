@@ -46,6 +46,14 @@ resource "aws_route_table_association" "us-east-rt-assoc" {
 }
 
 
+# resource "aws_route" "peering-connection-routes-east" {
+#   route_table_id            = aws_route_table.us-east-rt.id
+#   destination_cidr_block    = aws_vpc.vpc_us_west_2.cidr_block
+#   vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
+# }
+
+
+
 
 resource "aws_vpc" "vpc_us_west_2" {
   # This line is making difference between two region vpc's
@@ -98,3 +106,9 @@ resource "aws_route_table_association" "us-west-rt-assoc" {
 }
 
 
+# resource "aws_route" "peering-connection-routes-west" {
+
+#   route_table_id            = aws_route_table.us-east-rt.id
+#   destination_cidr_block    = aws_vpc.vpc_us_east_1.cidr_block
+#   vpc_peering_connection_id = aws_vpc_peering_connection_accepter.peer.id
+# }
