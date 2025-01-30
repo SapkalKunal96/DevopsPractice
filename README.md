@@ -81,6 +81,7 @@ sudo apt-get install terraform
 
 terraform -help
 
+
 ####### Enable tab completion ############
 touch ~/.bashrc
 terraform -install-autocomplete
