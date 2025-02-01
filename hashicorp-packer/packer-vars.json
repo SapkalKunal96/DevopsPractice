@@ -1,6 +1,6 @@
 {
-    "aws_access_key": "XXXXXX",
-    "aws_secret_key": "XXXXX",
+    "aws_access_key": "XX",
+    "aws_secret_key": "XXX",
     "region": "us-east-1",
     "source_ami": "ami-0e1bed4f06a3b463d",
     "instance_type": "t2.micro",
